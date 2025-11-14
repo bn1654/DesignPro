@@ -7,7 +7,7 @@ def validate_image_size(value):
 
 def validate_image_format(value):
     ext = os.path.splitext(value.name)[1]
-    valid_formats = ['.jpg', '.jpg', '.png', '.bmp']
+    valid_formats = ['.jpg', '.jpeg', '.png', '.bmp']
     
-    if ext in valid_formats:
+    if ext not in valid_formats:
         raise ValidationError("Wrong file format")

@@ -9,9 +9,9 @@ urlpatterns = [
     path('requests/', include('requests.urls')),
     path('', RedirectView.as_view(url='/requests/')),
     path('catalog/', RedirectView.as_view(url='/requests/')), #Почему то он пытается зайти на url прошлого задания (кеш браузера чистил раза 4)
-
     
 ]
 
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
