@@ -16,9 +16,5 @@ def validate_FIO(value):
     alphabet=set('абвгдеёжзийклмнопрстуфхцчшщъыьэюя- ')
     return not alphabet.isdisjoint(value.lower())
 
-def validate_login(value):
-    alphabet=set('qwertyuiopasdfghjklzxcvbnm-')
-    return not alphabet.isdisjoint(value.lower())
-
     
     
