@@ -4,36 +4,35 @@
     {% block title %}<title>Design Pro</title>{% endblock %}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {% load bootstrap4 %}
+    {% load django_bootstrap5 %}
     {% bootstrap_css %}
-    {% bootstrap_javascript jquery='full' %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
   </head>
 
   <body>
-    <div class="container-fluid">
-      <div class="d-flex flex-column">
+    <header class='bg-dark'>
         <div class="p-3">
           {% block navigation %}
           <nav class='d-flex justify-content-between'>
-          <a href="{% url 'index' %}">Home</a></li>
+          <a href="{% url 'index' %}" class = "link-light">Home</a></li>
           {% if user.is_authenticated %}
-            <div class='d-flex'>
-            <a href="{% url 'index' %}" class="mr-3">Profile</a></li>
-            <a href="{% url 'logout' %}">Logout</a></li>
+            <div class='d-flex gap-3'>
+            <a href="{% url 'profile' %}" class="link-light">Profile</a></li>
+            <a href="{% url 'logout' %}" class="link-light">Logout</a></li>
             </div>
           {% else %}
-            <div class='d-flex'>
-            <a href="{% url 'login' %}" class="mr-3">Login</a></li>
-            <a href="{% url 'singup' %}">Sing Up</a></li>
+            <div class='d-flex gap-3'>
+            <a href="{% url 'login' %}" class="link-light">Login</a></li>
+            <a href="{% url 'singup' %}" class="link-light">Sing Up</a></li>
             </div>
           {% endif %}
           </nav>
           {% endblock %}
         </div>
-        <div class="container-fluid gap-3 p-3">{% block content %}{% endblock %}</div>
-      </div>
-    </div>
+  </header>
+  <main>
+    <div class="container-fluid gap-3 p-3">{% block content %}{% endblock %}</div>
+  </main>
   </body>
 </html>
