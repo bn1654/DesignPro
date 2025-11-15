@@ -2,10 +2,17 @@ from django.db import models
 from . import validators
 from datetime import datetime, timedelta
 from .utilities import rename_image
+from django.contrib.auth.models import AbstractUser
 
+class AbsUser(AbstractUser):
+    FIO = models.CharField(verbose_name="FIO", max_length=255, validators=[validators.validate_FIO])
+    email=models.EmailField(verbose_name="login", max_length=255, unique=True)
+    
+    class Meta(AbstractUser.Meta):
+        pass
 
 class Category(models.Model):
-    name = name = models.CharField(verbose_name="name", max_length=200, help_text="name of category")
+    name  = models.CharField(verbose_name="name", max_length=200, help_text="name of category")
     
     def __str__(self):
         return self.name

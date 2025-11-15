@@ -11,3 +11,14 @@ def validate_image_format(value):
     
     if ext not in valid_formats:
         raise ValidationError("Wrong file format")
+
+def validate_FIO(value):
+    alphabet=set('абвгдеёжзийклмнопрстуфхцчшщъыьэюя- ')
+    return not alphabet.isdisjoint(value.lower())
+
+def validate_login(value):
+    alphabet=set('qwertyuiopasdfghjklzxcvbnm-')
+    return not alphabet.isdisjoint(value.lower())
+
+    
+    
