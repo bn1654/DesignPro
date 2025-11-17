@@ -14,8 +14,7 @@ def validate_image_format(value):
         raise ValidationError("Неверное расширение файла")
 
 def validate_FIO(value):
-    alphabet=r'^[а-я/-/ ]+$'
-    if not re.findall(alphabet, value):
+    if not re.findall(r'^[а-я/-/ ]+$', value.lower()):
         raise ValidationError("ФИО указано неверно")
 
     

@@ -5,8 +5,8 @@ from .utilities import rename_image
 from django.contrib.auth.models import AbstractUser
 
 class AbsUser(AbstractUser):
-    FIO = models.CharField(verbose_name="FIO", max_length=255, validators=[validators.validate_FIO])
-    email=models.EmailField(verbose_name="login", max_length=255, unique=True)
+    FIO = models.CharField(verbose_name="ФИО", max_length=255, validators=[validators.validate_FIO])
+    email=models.EmailField(verbose_name="email", max_length=255, unique=True)
     
     class Meta(AbstractUser.Meta):
         pass

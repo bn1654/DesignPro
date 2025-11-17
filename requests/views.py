@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from .models import Request
-from .forms import SignUpForm
+from .forms import SignUpForm, LoginForm
 from django.views.generic import CreateView, DetailView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
@@ -45,7 +45,10 @@ def logout_view(request):
 class RequestLogin(LoginView):
     redirect_authenticated_user = True
     success_url = reverse_lazy('profile')
+    form_class = LoginForm
     template_name = 'requests/login_form.html'
+    
+    
 
 @login_required
 def profile_view(request):
