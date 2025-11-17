@@ -12,12 +12,21 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     
     request_list = Request.objects.filter(status='c')
+    newest_completed_request = []
+    request_count = 0
+    for i in request_list:
+        if i.is_new_request():
+                newest_completed_request.append(i)
+                request_count += 1
+        if request_count >= 4:
+            break
+
     requests_is_accepted = Request.objects.filter(status='a').count()
     
     return render(
     request,
     'requests/index.html',
-    context={'request_list': request_list, 'requests_is_accepted':requests_is_accepted,},
+    context={'request_list': newest_completed_request, 'requests_is_accepted':requests_is_accepted,},
 )
 
 class SingUpView(CreateView):

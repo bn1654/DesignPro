@@ -1,9 +1,10 @@
 {% extends "layout/default.html" %}
 
 {% block content %}
-{% if user.FIO %}
-<h1> Добро пожаловать, {{user.FIO}}!</h1>
-{% else %}
-<h1> Добро пожаловать!</h1>
-{% endif %}
+    {% if user.FIO %}
+        <h1> Добро пожаловать, {{user.FIO}}!</h1>
+    {% else %}
+        <h1> Добро пожаловать!</h1>
+    {% endif %}
+        <h2> Ваши заявки: </h2>
 {% endblock %}

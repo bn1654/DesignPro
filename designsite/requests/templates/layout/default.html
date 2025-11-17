@@ -12,27 +12,32 @@
 
   <body>
     <header class='bg-dark'>
+      <div class='container'>
         <div class="p-3">
           {% block navigation %}
           <nav class='d-flex justify-content-between'>
-          <a href="{% url 'index' %}" class = "link-light">Home</a></li>
+          <a href="{% url 'index' %}" class = "link-light link-underline-opacity-0">Home</a></li>
           {% if user.is_authenticated %}
             <div class='d-flex gap-3'>
-            <a href="{% url 'profile' %}" class="link-light">Profile</a></li>
-            <a href="{% url 'logout' %}" class="link-light">Logout</a></li>
+            <a href="{% url 'profile' %}" class="link-light link-underline-opacity-0">Profile</a></li>
+            <a href="{% url 'logout' %}" class="link-light link-underline-opacity-0">Logout</a></li>
             </div>
           {% else %}
             <div class='d-flex gap-3'>
-            <a href="{% url 'login' %}" class="link-light">Login</a></li>
-            <a href="{% url 'singup' %}" class="link-light">Sing Up</a></li>
+            <a href="{% url 'login' %}" class="link-light link-underline-opacity-0">Login</a></li>
+            <a href="{% url 'singup' %}" class="link-light link-underline-opacity-0">Sing Up</a></li>
             </div>
           {% endif %}
           </nav>
           {% endblock %}
         </div>
+        </div>
   </header>
   <main>
-    <div class="container-fluid gap-3 p-3">{% block content %}{% endblock %}</div>
+    <div class='container'>
+      <div class="container-fluid gap-1 p-3">{% block content %}{% endblock %}</div>
+    </div>
   </main>
+
   </body>
 </html>
