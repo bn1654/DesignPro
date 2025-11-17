@@ -5,7 +5,7 @@ from .utilities import rename_image
 from django.contrib.auth.models import AbstractUser
 
 class AbsUser(AbstractUser):
-    FIO = models.CharField(verbose_name="ФИО", max_length=255, validators=[validators.validate_FIO])
+    FIO = models.CharField(verbose_name="ФИО", max_length=255)
     email=models.EmailField(verbose_name="email", max_length=255, unique=True)
     
     class Meta(AbstractUser.Meta):
@@ -20,14 +20,7 @@ class Category(models.Model):
 class Request(models.Model):
     name = models.CharField(verbose_name="name", max_length=200, help_text="name of design")
     summary = models.TextField(verbose_name="summary", max_length=500, help_text="design's summary")
-    image = models.ImageField(
-        verbose_name="image",
-        null=True,
-        blank=True,
-        help_text="design's image",
-        validators=[validators.validate_image_size, validators.validate_image_format],
-        upload_to=rename_image
-        )
+    image = models.ImageField(verbose_name="image",null=True,blank=True,help_text="design's image",upload_to=rename_image)
     creation_date = models.DateField(verbose_name="creation date", default=datetime.now(), help_text="date and time of design's creation")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     
