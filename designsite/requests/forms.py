@@ -8,4 +8,4 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = AbsUser
-        fields = ('FIO', 'username', 'email', 'password1', 'password2', )
+        fields = ('FIO', 'username', 'email', 'password1', 'password2',)
