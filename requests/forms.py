@@ -9,7 +9,7 @@ class SignUpForm(UserCreationForm):
     FIO = forms.CharField(required=True, help_text='Ваше ФИО, только кириллица, пробелы и дефис', label='ФИО')
     username = forms.CharField(label='Логин', help_text='Ваш логин, только латинница и дефис')
     
-    privacy_agreement = forms.BooleanField(label="Согласие на обработку персональных данных", help_text="Для регистрации необходимо дать свое согласие", required=True)
+    privacy_agreement = forms.BooleanField(label="Согласие на обработку персональных данных", help_text="Для регистрации необходимо дать свое согласие", required=False)
     
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -26,7 +26,6 @@ class SignUpForm(UserCreationForm):
         FIO = self.cleaned_data['FIO']
             
         if not re.match(r'^[а-я\-\s]+$', FIO.lower()):
-            print(re.match(r'^[а-яё\-\s]+$', FIO.lower()))
             raise ValidationError("ФИО введены неверно")
 
         return FIO
@@ -40,6 +39,14 @@ class SignUpForm(UserCreationForm):
         
         return email
     
+    def clean(self):
+        cleaned_data = super().clean()
+        accept_privacy = cleaned_data.get('privacy_agreement')
+        if not accept_privacy:
+            raise ValidationError({'privacy_agreement': "Вы должны принять условия пользовательского соглашения"})
+        
+        return cleaned_data
+
     class Meta:
         model = AbsUser
         fields = ('FIO', 'username', 'email', 'password1', 'password2', 'privacy_agreement')
