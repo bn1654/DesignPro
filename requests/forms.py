@@ -33,7 +33,6 @@ class SignUpForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data['email']
         
-        # Проверка на уникальность
         if AbsUser.objects.filter(email=email).exists():
             raise ValidationError("Пользователь с таким email уже существует")
         

@@ -47,9 +47,6 @@ class RequestLogin(LoginView):
     success_url = reverse_lazy('profile')
     form_class = LoginForm
     template_name = 'requests/login_form.html'
-    
-    
-    
 
 @login_required
 def profile_view(request):
