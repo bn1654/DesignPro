@@ -1,7 +1,8 @@
+import os
 import re
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import AbsUser
+from .models import AbsUser, Request, Category
 from django.core.exceptions import ValidationError
 
 
@@ -53,3 +54,26 @@ class SignUpForm(UserCreationForm):
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Логин')
+
+class RequestCreateForm(forms.ModelForm):
+    category = forms.ModelChoiceField(label='Категория', queryset=Category.objects.all(), empty_label="Выберете категорию...", widget=forms.Select(attrs={"class": "form-select"}))
+    image = forms.ImageField(label='Изображение', required=True)
+    
+    def clean_image(self):
+        image = self.cleaned_data['image']
+        ext = os.path.splitext(image.name)[1]
+        valid_formats = ['.jpg', '.jpeg', '.png', '.bmp']
+        
+        if ext not in valid_formats:
+            raise ValidationError("Неверное расширение файла")
+        
+        if image.size > 2*(1024**2):
+            raise ValidationError("Файл не должен превышать 2 МБ")
+        
+        return image
+    
+    
+    
+    class Meta:
+        model = Request
+        fields = ('name','summary','image', 'category')

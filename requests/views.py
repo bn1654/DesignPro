@@ -1,13 +1,13 @@
+from datetime import datetime
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from .models import Request
-from .forms import SignUpForm, LoginForm
+from .forms import SignUpForm, LoginForm, RequestCreateForm
 from django.views.generic import CreateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-
 
 def index(request):
     
@@ -51,3 +51,19 @@ class RequestLogin(LoginView):
 @login_required
 def profile_view(request):
     return render(request, 'requests/profile.html')
+
+class RequestCreateView(LoginRequiredMixin, CreateView):
+    model = Request
+    form_class = RequestCreateForm
+    template_name = 'requests/request_creation.html'
+    success_url = reverse_lazy('profile')
+    
+    def dispatch(self, request, *args, **kwargs):
+        self.current_user = request.user
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        form.instance.author = self.current_user
+        form.instance.creation_date = datetime.now()
+        return super().form_valid(form)
+    

@@ -23,9 +23,10 @@ class Category(models.Model):
 class Request(models.Model):
     name = models.CharField(verbose_name="Название", help_text="Название заявки")
     summary = models.TextField(verbose_name="Описание", help_text="Описание заявки")
-    image = models.ImageField(verbose_name="Изображение",null=True,blank=True,help_text="Изображение дизайна",upload_to=rename_image)
+    image = models.ImageField(verbose_name="Изображение",blank=True,help_text="Изображение дизайна",upload_to=rename_image)
     creation_date = models.DateField(verbose_name="Дата создания", default=datetime.now(), help_text="Дата и время создания заявки")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey(AbsUser, on_delete=models.CASCADE, null=True)
     
     REQUEST_STATUS = [
         ('n', 'New'),
