@@ -50,7 +50,9 @@ class RequestLogin(LoginView):
 
 @login_required
 def profile_view(request):
-    return render(request, 'requests/profile.html')
+    profile_requests = Request.objects.filter(author=request.user)
+    
+    return render(request, 'requests/profile.html', context={"requests": profile_requests})
 
 class RequestCreateView(LoginRequiredMixin, CreateView):
     model = Request

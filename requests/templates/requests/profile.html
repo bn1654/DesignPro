@@ -7,4 +7,29 @@
         <h1> Добро пожаловать!</h1>
     {% endif %}
         <h2> Ваши заявки: </h2>
+    {% if requests %}
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+    {% for request in requests %}
+    <div class="border border-dark rounded d-flex p-3 w-75">
+                    <div class='col-md-4 col-lg-3 rounded'>
+                        {% if request.image %}
+                        <img src="/media/{{request.image}}" class='img-thumbnail img-fluid' alt="request-image">
+                        {% endif %}
+                    </div>
+                    <div class='d-flex flex-column justify-content-between container-fluid'>
+                        <div>
+                            <p>{{request.name}}</p>
+                            <p>{{request.summary}}</p>
+                        </div>
+                            <div class='d-flex justify-content-between'>
+                                <p>{{request.category}}</p>
+                                <p>{{request.creation_date}}</p>
+                            </div>
+                    </div>
+                </div>
+    {% endfor %}
+            </div>
+    {% else %}
+        <h3>У вас пока нет оставленных заявок</h3>
+    {% endif %}
 {% endblock %}
