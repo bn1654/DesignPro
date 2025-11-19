@@ -1,18 +1,18 @@
 from datetime import datetime
+from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from .models import Request
-from .forms import SignUpForm, LoginForm, RequestCreateForm
-from django.views.generic import CreateView, ListView, DeleteView
+from .forms import SignUpForm, LoginForm, RequestCreateForm, RequestStatusAForm, RequestStatusСForm
+from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
 
 def index(request):
     
     request_list = Request.objects.filter(status='c').order_by('-creation_date')
-    print(request_list)
     newest_completed_request = []
     request_count = 0
     for i in request_list:
@@ -48,17 +48,18 @@ class RequestLogin(LoginView):
     form_class = LoginForm
     template_name = 'requests/login_form.html'
 
-@login_required
-def profile_view(request):
-    profile_requests = Request.objects.filter(author=request.user)
-    
-    
-    return render(request, 'requests/profile.html', context={"requests": profile_requests})
 
-class ProfileView(ListView):
+class ProfileView(LoginRequiredMixin, ListView):
     model = Request
     template_name = 'requests/profile.html'
     
+    
+    def dispatch(self, request, *args, **kwargs):
+        
+        if request.user.is_staff or request.user.is_superuser:
+            return redirect('admin')
+        
+        return super().dispatch(request, *args, **kwargs)
     
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -68,15 +69,13 @@ class ProfileView(ListView):
         queryset = queryset.filter(author=author)
         
         status = self.request.GET.get('status')
-        print(status)
         if status:
             queryset = queryset.filter(status=status)
-        return queryset
+        return queryset.order_by('-creation_date')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['selected_status'] = self.request.GET.get('status', '')
-        print(context)
         return context
     
     
@@ -100,3 +99,74 @@ class RequestCreateView(LoginRequiredMixin, CreateView):
 class RequestDelete(DeleteView):
     model = Request
     success_url = reverse_lazy('profile')
+    
+
+class AdminView(ListView):
+    model = Request
+    template_name = 'requests/admin_panel.html'
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_staff and not request.user.is_superuser:
+            return HttpResponseForbidden("Доступ запрещен")
+        return super().dispatch(request, *args, **kwargs)
+    
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        
+        
+        status = self.request.GET.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+        return queryset.order_by('-creation_date')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['selected_status'] = self.request.GET.get('status', '')
+        return context
+
+class RequestStatusUpdate(UpdateView):
+    model = Request
+    fields = ['status']
+    success_url = reverse_lazy('admin')
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_staff and not request.user.is_superuser:
+            return HttpResponseForbidden("Доступ запрещен")
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['selected_status'] = self.request.GET.get('status', '')
+        context['accept_form'] = RequestStatusAForm()
+        context['complete_form'] = RequestStatusСForm(instance=self.object)
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        
+        if 'accept' in request.POST:
+            form = RequestStatusAForm(request.POST)
+            if form.is_valid():
+                self.object.status = 'a'
+                self.object.save()
+                return redirect(self.success_url)
+            else:
+                context = self.get_context_data()
+                context['accept_form'] = form
+                return self.render_to_response(context)
+                
+        elif 'complete' in request.POST:
+            form = RequestStatusСForm(request.POST, request.FILES)
+            if form.is_valid():
+                self.object.status = 'c'
+                self.object.save()
+                return redirect(self.success_url)
+            else:
+                context = self.get_context_data()
+                context['complete_form'] = form
+                return self.render_to_response(context)
+        
+        return redirect(self.success_url)
+    

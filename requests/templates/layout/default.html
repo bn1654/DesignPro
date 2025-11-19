@@ -22,6 +22,9 @@
             {% if not user.is_staff and not user.is_admin %}
             <a href="{% url 'request-create' %}" class="link-light link-underline-opacity-0"> Создать заявку </a>
             <a href="{% url 'profile' %}" class="link-light link-underline-opacity-0">Профиль</a></li>
+            {% else %}
+            <a href="{% url 'admin' %}" class="link-light link-underline-opacity-0"> Панель управления </a>
+            <a href="{% url 'profile' %}" class="link-light link-underline-opacity-0">Профиль</a></li>
             {% endif %}
             <a href="{% url 'logout' %}" class="link-light link-underline-opacity-0">Выйти</a></li>
             </div>

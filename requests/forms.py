@@ -77,3 +77,13 @@ class RequestCreateForm(forms.ModelForm):
     class Meta:
         model = Request
         fields = ('name','summary','image', 'category')
+
+class RequestStatusAForm(forms.Form):
+    commentary = forms.CharField(label="Комментарий", help_text='Для того чтобы изменить статус на "Принято в работу" необходимо оставить комментарий', required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+
+class RequestStatusСForm(forms.ModelForm):
+    completed_image = forms.ImageField(label="Изображение", help_text='Для того чтобы изменить статус на "Выполнено" необходимо добавить изображение выполненной работы', required=True, widget=forms.FileInput(attrs={"class": "form-control"}))
+    
+    class Meta:
+        model = Request
+        fields = ['completed_image']

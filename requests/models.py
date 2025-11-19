@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime, timedelta
+from datetime import datetime
 from .utilities import rename_image
 from django.contrib.auth.models import AbstractUser
 
@@ -24,9 +24,10 @@ class Request(models.Model):
     name = models.CharField(verbose_name="Название", help_text="Название заявки")
     summary = models.TextField(verbose_name="Описание", help_text="Описание заявки")
     image = models.ImageField(verbose_name="Изображение",blank=True,help_text="Изображение дизайна",upload_to=rename_image)
-    creation_date = models.DateField(verbose_name="Дата создания", default=datetime.now(), help_text="Дата и время создания заявки")
+    creation_date = models.DateTimeField(verbose_name="Дата создания", default=datetime.now(), help_text="Дата и время создания заявки")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     author = models.ForeignKey(AbsUser, on_delete=models.CASCADE, null=True)
+    
     
     REQUEST_STATUS = [
         ('n', 'Новая'),
@@ -40,5 +41,6 @@ class Request(models.Model):
     
     class Meta:
         ordering = ['creation_date']
-    
+
+
     
