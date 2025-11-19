@@ -8,7 +8,6 @@ from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 
 def index(request):
     
