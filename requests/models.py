@@ -25,7 +25,7 @@ class Request(models.Model):
     summary = models.TextField(verbose_name="Описание", help_text="Описание заявки")
     image = models.ImageField(verbose_name="Изображение",blank=True,help_text="Изображение дизайна",upload_to=rename_image)
     creation_date = models.DateTimeField(verbose_name="Дата создания", default=datetime.now(), help_text="Дата и время создания заявки")
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     author = models.ForeignKey(AbsUser, on_delete=models.CASCADE, null=True)
     
     

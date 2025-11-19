@@ -1,0 +1,33 @@
+{% extends 'layout/default.html' %}
+
+
+{% block content %}
+
+<h1>Панель управления категориями</h1>
+<form method="POST">
+    <h2>Добавить категорию</h2>
+    {%csrf_token %}
+    <div class='d-flex gap-2 align-items-end'>
+    <div>
+    {{category_create}}
+    </div>
+    <div>
+    <button type='submit' class='btn btn-primary'>Добавить</button>
+    </div>
+    </div>
+</form>
+
+<h2>Добавленные категории на сайте</h2>
+{% if category_list %}
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+    {% for category in category_list %}
+    <div class="border border-dark rounded d-flex justify-content-around align-items-center p-2 w-25">
+        <span>{{category.name}}</span>
+            <a href="{% url 'category-delete' category.pk %}" class="btn btn-danger">Удалить</a>
+    </div>
+    {% endfor %}
+            </div>
+    {% else %}
+        <h3>На сайте нет категорий</h3>
+    {% endif %}
+{% endblock %}

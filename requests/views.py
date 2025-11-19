@@ -2,12 +2,12 @@ from datetime import datetime
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from .models import Request
-from .forms import SignUpForm, LoginForm, RequestCreateForm, RequestStatusAForm, RequestStatusСForm
+from .models import Request, Category
+from .forms import SignUpForm, LoginForm, RequestCreateForm, RequestStatusAForm, RequestStatusСForm, CategoryCreateForm
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 
 def index(request):
@@ -140,7 +140,7 @@ class RequestStatusUpdate(UpdateView):
         
         context['selected_status'] = self.request.GET.get('status', '')
         context['accept_form'] = RequestStatusAForm()
-        context['complete_form'] = RequestStatusСForm(instance=self.object)
+        context['complete_form'] = RequestStatusСForm()
         return context
     
     def post(self, request, *args, **kwargs):
@@ -155,8 +155,7 @@ class RequestStatusUpdate(UpdateView):
             else:
                 context = self.get_context_data()
                 context['accept_form'] = form
-                return self.render_to_response(context)
-                
+                return self.render_to_response(context)        
         elif 'complete' in request.POST:
             form = RequestStatusСForm(request.POST, request.FILES)
             if form.is_valid():
@@ -169,4 +168,30 @@ class RequestStatusUpdate(UpdateView):
                 return self.render_to_response(context)
         
         return redirect(self.success_url)
+
+class CategoryListView(ListView):
+    model = Category
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context["category_create"] = CategoryCreateForm()
+        
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        form = CategoryCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('category-list')
+        else:
+            context = self.get_context_data()
+            context['category_create'] = form
+            return self.render_to_response(context)
+
+class CategoryDeleteView(DeleteView):
+    model = Category
+    success_url = reverse_lazy('category-list')
+    
     
