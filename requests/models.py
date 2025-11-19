@@ -29,14 +29,16 @@ class Request(models.Model):
     author = models.ForeignKey(AbsUser, on_delete=models.CASCADE, null=True)
     
     REQUEST_STATUS = [
-        ('n', 'New'),
-        ('a', 'Accepted'),
-        ('c', 'Complete'),
+        ('n', 'Новая'),
+        ('a', 'Принята в работу'),
+        ('c', 'Выполнено'),
     ]
     status = models.CharField(max_length=1, choices=REQUEST_STATUS, default='n', help_text='request status')
 
     def __str__(self):
         return self.name
     
-    def is_new_request(self):
-        return datetime.now().date() < self.creation_date + timedelta(days=2)
+    class Meta:
+        ordering = ['creation_date']
+    
+    

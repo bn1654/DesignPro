@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from .models import Request
 from .forms import SignUpForm, LoginForm, RequestCreateForm
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,13 +11,13 @@ from django.contrib.auth.decorators import login_required
 
 def index(request):
     
-    request_list = Request.objects.filter(status='c')
+    request_list = Request.objects.filter(status='c').order_by('-creation_date')
+    print(request_list)
     newest_completed_request = []
     request_count = 0
     for i in request_list:
-        if i.is_new_request():
-                newest_completed_request.append(i)
-                request_count += 1
+        newest_completed_request.append(i)
+        request_count += 1
         if request_count >= 4:
             break
 
@@ -52,7 +52,34 @@ class RequestLogin(LoginView):
 def profile_view(request):
     profile_requests = Request.objects.filter(author=request.user)
     
+    
     return render(request, 'requests/profile.html', context={"requests": profile_requests})
+
+class ProfileView(ListView):
+    model = Request
+    template_name = 'requests/profile.html'
+    
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        
+        author = self.request.user
+        
+        queryset = queryset.filter(author=author)
+        
+        status = self.request.GET.get('status')
+        print(status)
+        if status:
+            queryset = queryset.filter(status=status)
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['selected_status'] = self.request.GET.get('status', '')
+        print(context)
+        return context
+    
+    
 
 class RequestCreateView(LoginRequiredMixin, CreateView):
     model = Request
@@ -68,4 +95,8 @@ class RequestCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.current_user
         form.instance.creation_date = datetime.now()
         return super().form_valid(form)
-    
+
+
+class RequestDelete(DeleteView):
+    model = Request
+    success_url = reverse_lazy('profile')
